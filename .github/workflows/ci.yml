@@ -25,7 +25,7 @@ jobs:
     - name: Build and tag Docker image with current date and time
       id: build-image
       run: |
-        IMAGE_TAG=$(date +'%Y%m%d%H%M%S')
+        IMAGE_TAG=$(date +'%Y_%m_%d--%H_%M_%S')
         docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:$IMAGE_TAG --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
         echo "::set-output name=image-tag::$IMAGE_TAG"
 
