@@ -30,7 +30,7 @@ jobs:
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
 
       # Test the Docker image
-      - name: Test Docker image
+      - name: Test the Docker image
         run: |
           docker run --name devops-final-exam-part2-container -d -p 5000:5000 ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
           # Wait for the container to be up and running
