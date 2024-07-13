@@ -36,7 +36,7 @@ jobs:
           # Wait for the container to be up and running
           sleep 10
           # Test if the app is running by making a request
-          curl --fail http://127.0.0.1:5000 || (docker logs devops-final-exam-part2-container && exit 1)
+          curl --fail http://127.0.0.1:5000/api/doc || (docker logs devops-final-exam-part2-container && exit 1)
           docker stop devops-final-exam-part2-container
 
       # Push the Docker image to Docker Hub
