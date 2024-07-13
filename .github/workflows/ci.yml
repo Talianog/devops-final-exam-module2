@@ -40,5 +40,5 @@ jobs:
           docker stop devops-final-exam-part2-container
 
       # Push the Docker image to Docker Hub
-      - name: Push Docker image
+      - name: Push the Docker image 
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
