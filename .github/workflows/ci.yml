@@ -10,35 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository code
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      # Log in to Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Build the Docker image
-      - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
+    - name: Build and tag Docker image
+      id: build-image
+      run: |
+        IMAGE_TAG=$(date +'%Y%m%d%H%M%S')
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:$IMAGE_TAG --tag ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
+        echo "::set-output name=image-tag::$IMAGE_TAG"
 
-      # Test the Docker image
-      - name: Test the Docker image
-        run: |
-          docker run --name devops-final-exam-part2-container -d -p 5000:5000 ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
-          # Wait for the container to be up and running
-          sleep 10
-          # Test if the app is running by making a request
-          curl --fail http://127.0.0.1:5000/api/doc || (docker logs devops-final-exam-part2-container && exit 1)
-          docker stop devops-final-exam-part2-container
+    - name: Test the Docker image
+      run: |
+        IMAGE_TAG=${{ steps.build-image.outputs.image-tag }}
+        docker run --name devops-final-exam-part2-container -d -p 5000:5000 ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:$IMAGE_TAG
+        # Wait for the container to be up and running
+        sleep 10
+        # Test if the app is running by making a request
+        curl --fail http://127.0.0.1:5000/api/doc || (docker logs devops-final-exam-part2-container && exit 1)
+        docker stop devops-final-exam-part2-container
 
-      # Push the Docker image to Docker Hub
-      - name: Push the Docker image 
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
+    - name: Push the Docker image
+      run: |
+        IMAGE_TAG=${{ steps.build-image.outputs.image-tag }}
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:$IMAGE_TAG
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
