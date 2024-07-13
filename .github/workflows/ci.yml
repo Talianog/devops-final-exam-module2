@@ -22,7 +22,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and tag Docker image
+    - name: Build and tag Docker image with current date and time
       id: build-image
       run: |
         IMAGE_TAG=$(date +'%Y%m%d%H%M%S')
