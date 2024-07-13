@@ -34,7 +34,7 @@ jobs:
         run: |
           docker run --name devops-final-exam-part2-container -d -p 5000:5000 ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
           # Wait for the container to be up and running
-          sleep 10a
+          sleep 10
           # Test if the app is running by making a request
           curl --fail http://localhost:5000 || (docker logs devops-final-exam-part2-container && exit 1)
           docker stop devops-final-exam-part2-container
