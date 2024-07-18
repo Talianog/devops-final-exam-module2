@@ -44,3 +44,13 @@ jobs:
         IMAGE_TAG=${{ steps.build-image.outputs.image-tag }}
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:$IMAGE_TAG
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-final-exam-part2:latest
+        
+    - name: AWS CLI Configure
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region ${{ secrets.AWS_REGION }}
+
+    - name: Update ECS Service
+      run: |
+        aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.ECS_SERVICE_NAME }} --force-new-deployment
